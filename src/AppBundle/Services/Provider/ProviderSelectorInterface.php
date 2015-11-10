@@ -14,5 +14,5 @@ namespace AppBundle\Services\Provider;
  */
 interface ProviderSelectorInterface {
 
-    public function select();
+    public function select($providers);
 }
