@@ -6,10 +6,14 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Document\Service;
+use FOS\RestBundle\Controller\Annotations\RouteResource;
 
+/**
+ * @RouteResource("Service")
+ */
 class ServiceRestController extends Controller {
 
-    public function getServicesAction() {
+    public function cgetAction() {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
         $services = $dm->getRepository('AppBundle:Service')->findAll();
@@ -17,7 +21,7 @@ class ServiceRestController extends Controller {
         return $services;
     }
 
-    public function getServiceAction($name) {
+    public function getAction($name) {
         return $this->findService($name);
     }
     
