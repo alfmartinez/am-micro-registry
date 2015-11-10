@@ -82,9 +82,9 @@ swiftmailer:
 doctrine_mongodb:
     connections:
         default:
-            server: "%database.mongolab.uri%"
+            server: "%mongodb_uri%"
             options: {}
-    default_database: "%database.mongolab.name%"
+    default_database: "%mongodb_name%"
     document_managers:
         default:
             auto_mapping: true

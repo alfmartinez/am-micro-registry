@@ -17,5 +17,5 @@ parameters:
 
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
-    database.mongolab.uri: ~
-    database.mongolab.name: ~
+    mongodb_uri: ~
+    mongodb_name: ~

@@ -56,7 +56,12 @@
         "symfony-web-dir": "web",
         "symfony-assets-install": "relative",
         "incenteev-parameters": {
-            "file": "app/config/parameters.yml"
+            "file": "app/config/parameters.yml",
+            "env-map": {
+                "mongodb_uri": "MONGOLAB_URI",
+                "mongodb_name": "MONGOLAB_NAME"
+
+            }
         },
         "branch-alias": {
             "dev-master": "2.7-dev"
