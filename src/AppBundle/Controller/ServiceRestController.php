@@ -15,4 +15,7 @@ class ServiceRestController extends Controller {
         return array($service1, $service2);
     }
 
+    public function getServiceAction($name) {
+        return new Service($name);
+    }
 }
