@@ -26,6 +26,6 @@ class ServiceRestController extends Controller {
             throw $this->createNotFoundException();
         }
         
-        return $services;
+        return $service;
     }
 }
