@@ -7,7 +7,7 @@ use JMS\Serializer\Annotation\ExclusionPolicy;
 use JMS\Serializer\Annotation\Expose;
 
 /**
- * @MongoDB\Document
+ * @MongoDB\Document(collection="services")
  * @ExclusionPolicy("all") 
  */
 class Service {
