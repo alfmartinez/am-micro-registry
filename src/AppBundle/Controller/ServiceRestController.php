@@ -51,6 +51,7 @@ class ServiceRestController extends Controller {
     }
     
     private function selectProvider($service){
-        return $service->getProviders()[0];
+        $selector = $this->get("provider_selector");
+        return $selector->select($service->getProviders());
     }
 }
