@@ -30,13 +30,13 @@ class ServiceRestController extends Controller {
        return $service->getProviders();
     }
     
-    public function getProviderUrlAction($name) {
+    public function getProviderAction($name) {
        $service = $this->findService($name);
        $provider = $this->selectProvider($service);
        if (!$provider) {
             throw $this->createNotFoundException("No known provider for $name");
         }
-       return $provider->getUrl();
+       return $provider;
     }
     
     private function findService($name) {
