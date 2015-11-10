@@ -30,13 +30,22 @@ class ServiceRestController extends Controller {
        return $service->getProviders();
     }
     
+    public function getProviderUrlAction($name) {
+       $service = $this->findService($name);
+       $provider = array_random($service->getProviders());
+       if (!$provider) {
+            throw $this->createNotFoundException("No known provider for $name");
+        }
+       return $provider->getUrl();
+    }
+    
     private function findService($name) {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
         $service = $dm->getRepository('AppBundle:Service')->findOneByName($name);
         
         if (!$service) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException("No known $name service");
         }
         return $service;
     }
