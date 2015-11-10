@@ -84,7 +84,7 @@ doctrine_mongodb:
         default:
             server: "%database.mongolab.uri%"
             options: {}
-    default_database: registry
+    default_database: "%database.mongolab.name%"
     document_managers:
         default:
             auto_mapping: true
