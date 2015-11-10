@@ -1,0 +1,6 @@
+## YAML Template.
+---
+users : 
+  type: rest
+  resource:     "AppBundle:ServiceRest"
+  name_prefix:  api_

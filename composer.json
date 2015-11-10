@@ -19,7 +19,9 @@
         "incenteev/composer-parameter-handler": "~2.0",
         "snc/redis-bundle": "^1.1",
         "doctrine/mongodb-odm": "^1.0",
-        "doctrine/mongodb-odm-bundle": "^3.0"
+        "doctrine/mongodb-odm-bundle": "^3.0",
+        "friendsofsymfony/rest-bundle": "^1.7",
+        "jms/serializer-bundle": "^1.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
