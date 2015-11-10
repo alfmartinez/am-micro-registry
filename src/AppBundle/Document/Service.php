@@ -3,9 +3,12 @@
 namespace AppBundle\Document;
 
 use Doctrine\ODM\MongoDB\Mapping\Annotations as MongoDB;
+use JMS\Serializer\Annotation\ExclusionPolicy;
+use JMS\Serializer\Annotation\Expose;
 
 /**
  * @MongoDB\Document
+ * @ExclusionPolicy("all") 
  */
 class Service {
 
@@ -16,17 +19,20 @@ class Service {
 
     /**
      * @MongoDB\String
+     * @Expose
      */
     protected $name;
 
+    function __construct($name = '') {
+        $this->name = $name;
+    }
 
     /**
      * Get id
      *
      * @return id $id
      */
-    public function getId()
-    {
+    public function getId() {
         return $this->id;
     }
 
@@ -36,8 +42,7 @@ class Service {
      * @param string $name
      * @return self
      */
-    public function setName($name)
-    {
+    public function setName($name) {
         $this->name = $name;
         return $this;
     }
@@ -47,8 +52,8 @@ class Service {
      *
      * @return string $name
      */
-    public function getName()
-    {
+    public function getName() {
         return $this->name;
     }
+
 }
