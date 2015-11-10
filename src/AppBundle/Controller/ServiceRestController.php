@@ -32,8 +32,7 @@ class ServiceRestController extends Controller {
     
     public function getProviderUrlAction($name) {
        $service = $this->findService($name);
-       $provider = array_rand($service->getProviders()->toArray());
-       return $provider;
+       $provider = $this->selectProvider($service);
        if (!$provider) {
             throw $this->createNotFoundException("No known provider for $name");
         }
@@ -49,5 +48,9 @@ class ServiceRestController extends Controller {
             throw $this->createNotFoundException("No known $name service");
         }
         return $service;
+    }
+    
+    private function selectProvider($service){
+        return $service->getProviders()[0];
     }
 }
