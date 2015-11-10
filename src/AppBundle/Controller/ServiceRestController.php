@@ -10,9 +10,11 @@ use AppBundle\Document\Service;
 class ServiceRestController extends Controller {
 
     public function getServicesAction() {
-        $service1 = new Service('Andy');
-        $service2 = new Service('Selma');
-        return array($service1, $service2);
+        $dm = $this->get('doctrine_mongodb')->getManager();
+
+        $services = $dm->getRepository('AppBundle:Service')->findAll();
+        
+        return $services;
     }
 
     public function getServiceAction($name) {
