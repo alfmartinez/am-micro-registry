@@ -22,6 +22,11 @@ class Service {
      * @Expose
      */
     protected $name;
+    
+    /**
+     * @MongoDB\EmbedMany(targetDocument="Provider")
+     */
+    protected $providers = array();
 
     function __construct($name = '') {
         $this->name = $name;
@@ -54,6 +59,18 @@ class Service {
      */
     public function getName() {
         return $this->name;
+    }
+    
+    public function getProviders() {
+        return $this->providers;
+    }
+
+    public function setProviders($providers) {
+        $this->providers = $providers;
+    }
+
+    public function addProvider($provider) {
+        $this->providers[]=$provider;
     }
 
 }

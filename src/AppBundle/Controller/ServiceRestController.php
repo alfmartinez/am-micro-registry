@@ -18,6 +18,15 @@ class ServiceRestController extends Controller {
     }
 
     public function getServiceAction($name) {
+        return $this->findService($name);
+    }
+    
+    public function getProvidersAction($name) {
+       $service = $this->findService($name);
+       return $service->getProviders();
+    }
+    
+    private function findService($name) {
         $dm = $this->get('doctrine_mongodb')->getManager();
 
         $service = $dm->getRepository('AppBundle:Service')->findOneByName($name);
@@ -25,7 +34,6 @@ class ServiceRestController extends Controller {
         if (!$service) {
             throw $this->createNotFoundException();
         }
-        
         return $service;
     }
 }
