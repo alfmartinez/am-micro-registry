@@ -7,6 +7,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use AppBundle\Document\Service;
 use FOS\RestBundle\Controller\Annotations\RouteResource;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * @RouteResource("Service")
@@ -37,6 +38,10 @@ class ServiceRestController extends Controller {
             throw $this->createNotFoundException("No known provider for $name");
         }
        return $provider;
+    }
+    
+    public function postRegisterAction(Request $request) {
+        return $request;
     }
     
     private function findService($name) {
