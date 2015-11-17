@@ -41,7 +41,7 @@ class ServiceRestController extends Controller {
     }
     
     public function postRegisterAction(Request $request) {
-        return $request;
+        return $request->getContent();
     }
     
     private function findService($name) {
