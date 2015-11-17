@@ -1,1 +1,1 @@
-web: bin/heroku-php-nginx -F fpm_custom.conf web/
+web: bin/heroku-hhvm-apache2 -I fpm_custom.conf web/
