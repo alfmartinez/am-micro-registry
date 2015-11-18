@@ -1,1 +1,1 @@
-web: bin/heroku-php-apache2 -I hhvm_custom.conf web/
+web: bin/heroku-hhvm-nginx -I hhvm_custom.conf web/
