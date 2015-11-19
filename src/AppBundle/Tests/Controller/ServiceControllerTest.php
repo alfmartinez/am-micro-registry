@@ -66,6 +66,18 @@ class ServiceControllerTest extends WebTestCase {
         $this->assertJsonContent(['url'=>'http://test.example.com'], $actual);
     }
     
+    /**
+     * @test
+     */
+    public function getProviderReturnsNotFoundIfServiceHasNoProvider() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $this->client->request('GET', '/api/services/ServiceB/provider');
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+    }
+    
 
     private function assertJsonContent($expected, $actual) {
         $this->assertJson($actual);
