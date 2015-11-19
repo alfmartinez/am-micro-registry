@@ -4,6 +4,7 @@ php:
 - hhvm
 
 before_script:
+  - phpenv config-add myconfig.ini
   - composer install --dev
 
 script:
