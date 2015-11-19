@@ -89,6 +89,18 @@ class ServiceControllerTest extends WebTestCase {
         $this->client->request('GET', '/api/services/ServiceC');
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
+    
+    /**
+     * @test
+     */
+    public function getUnknownServiceProviderReturnsNotFound() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $this->client->request('GET', '/api/services/ServiceC/provider');
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+    }
 
     private function assertJsonContent($expected, $actual) {
         $this->assertJson($actual);
