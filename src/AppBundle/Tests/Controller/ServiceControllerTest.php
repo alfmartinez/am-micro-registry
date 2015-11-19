@@ -83,6 +83,34 @@ class ServiceControllerTest extends WebTestCase {
     /**
      * @test
      */
+    public function getProviderReturnsFirstProviderForServiceIfServicesHasProvider() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $this->client->request('GET', '/api/services/ServiceA/provider');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $actual = $this->client->getResponse()->getContent();
+        $this->assertJsonContent(['url'=>'http://test.example.com'], $actual);
+    }
+    
+    /**
+     * @test
+     */
+    public function getProvidersReturnsAllProviderForServiceIfServicesHasProvider() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $this->client->request('GET', '/api/services/ServiceA/providers');
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $actual = $this->client->getResponse()->getContent();
+        $this->assertJsonContent([['url'=>'http://test.example.com'],['url'=>'http://test2.example.com']], $actual);
+    }
+    
+    /**
+     * @test
+     */
     public function getProviderReturnsNotFoundIfServiceHasNoProvider() {
         $this->createServices([
             ['name' => 'ServiceA', 'providers' => ['http://test.example.com']],
