@@ -9,7 +9,7 @@ before_script:
   - composer install --dev
 
 script:
-    - bin/phpunit --coverage-clover=coverage.xml
+    - bin/phpunit -c app --coverage-clover=coverage.xml
 
 after_success:
     - bash <(curl -s https://codecov.io/bash)
