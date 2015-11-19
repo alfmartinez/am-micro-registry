@@ -22,7 +22,7 @@
     -->
 
     <filter>
-        <whitelist>
+        <whitelist processUncoveredFilesFromWhitelist="true">
             <directory>../src</directory>
             <exclude>
                 <directory>../src/*Bundle/Resources</directory>
@@ -34,4 +34,5 @@
             </exclude>
         </whitelist>
     </filter>
+    
 </phpunit>

@@ -22,7 +22,8 @@
         "doctrine/mongodb-odm": "^1.0",
         "doctrine/mongodb-odm-bundle": "^3.0",
         "friendsofsymfony/rest-bundle": "^1.7",
-        "jms/serializer-bundle": "^1.0"
+        "jms/serializer-bundle": "^1.0",
+        "phpunit/phpunit": "^4.8"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3"
