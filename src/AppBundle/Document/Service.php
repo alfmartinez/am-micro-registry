@@ -22,7 +22,7 @@ class Service {
      * @Expose
      */
     protected $name;
-    
+
     /**
      * @MongoDB\EmbedMany(targetDocument="Provider")
      */
@@ -32,45 +32,12 @@ class Service {
         $this->name = $name;
     }
 
-    /**
-     * Get id
-     *
-     * @return id $id
-     */
-    public function getId() {
-        return $this->id;
-    }
-
-    /**
-     * Set name
-     *
-     * @param string $name
-     * @return self
-     */
-    public function setName($name) {
-        $this->name = $name;
-        return $this;
-    }
-
-    /**
-     * Get name
-     *
-     * @return string $name
-     */
-    public function getName() {
-        return $this->name;
-    }
-    
     public function getProviders() {
         return $this->providers;
     }
 
-    public function setProviders($providers) {
-        $this->providers = $providers;
-    }
-
     public function addProvider($provider) {
-        $this->providers[]=$provider;
+        $this->providers[] = $provider;
     }
 
 }
