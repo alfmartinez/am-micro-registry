@@ -240,6 +240,23 @@ class ServiceControllerTest extends WebTestCase {
         $this->assertJsonContent(['msg'=>'Registration Removed'], $actual);
         
     }
+    
+    /**
+     * @test
+     */
+    public function deleteReturnsNotFoundIfServiceDoesNotExist() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $requestBody = json_encode(['host'=>'http://test.example.com']);
+        $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
+        $this->client->request(
+                'DELETE', '/api/services/ServiceC/provider', [], [], $requestHeaders, $requestBody
+        );
+        
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+    }
 
     private function assertJsonContent($expected, $actual) {
         $this->assertJson($actual);
