@@ -197,12 +197,12 @@ class ServiceControllerTest extends WebTestCase {
     /**
      * @test
      */
-    public function postUnregisterRemovesProviderIfServiceExists() {
+    public function deleteUnregisterRemovesProvider() {
         $this->createServices([
-            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com']],
             ['name' => 'ServiceB']
         ]);
-        $requestBody = json_encode(['host'=>'http://test2.example.com']);
+        $requestBody = json_encode(['host'=>'http://test.example.com']);
         $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
         $this->client->request(
                 'DELETE', '/api/services/ServiceA/provider', [], [], $requestHeaders, $requestBody
@@ -210,9 +210,34 @@ class ServiceControllerTest extends WebTestCase {
         
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $actual = $this->client->getResponse()->getContent();
-        $this->assertServiceHasProvider('http://test.example.com','ServiceA');
-        $this->assertServiceHasNotProvider('http://test2.example.com','ServiceA');
-        $this->assertJsonContent(['msg'=>'Registration OK'], $actual);
+        $service = $this->getService('ServiceA');
+        $this->assertCount(0, $service->getProviders());
+        $this->assertJsonContent(['msg'=>'Registration Removed'], $actual);
+        
+    }
+    
+    /**
+     * @test
+     */
+    public function deleteUnregisterRemovesProviderIfMultipleProviders() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $requestBody = json_encode(['host'=>'http://test.example.com']);
+        $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
+        $this->client->request(
+                'DELETE', '/api/services/ServiceA/provider', [], [], $requestHeaders, $requestBody
+        );
+        
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $actual = $this->client->getResponse()->getContent();
+        $service = $this->getService('ServiceA');
+        $this->assertCount(1, $service->getProviders());
+        $this->assertServiceHasNotProvider('http://test.example.com','ServiceA');
+        $this->assertServiceHasProvider('http://test2.example.com','ServiceA');
+        
+        $this->assertJsonContent(['msg'=>'Registration Removed'], $actual);
         
     }
 

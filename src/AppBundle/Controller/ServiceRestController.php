@@ -59,7 +59,7 @@ class ServiceRestController extends Controller {
     public function deleteProviderAction($name, Request $request) {
         $data = json_decode($request->getContent());
         $this->unregisterService($name, $data);
-        $msg = 'Registration OK';
+        $msg = 'Registration Removed';
         return ['msg' => $msg];
     }
 
