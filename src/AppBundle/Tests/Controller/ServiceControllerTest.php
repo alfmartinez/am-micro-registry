@@ -258,6 +258,42 @@ class ServiceControllerTest extends WebTestCase {
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
 
+    /**
+     * @test
+     */
+    public function deleteServiceRemovesService() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com']]
+        ]);
+        $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
+        $this->client->request(
+                'DELETE', '/api/services/ServiceA', [], [], $requestHeaders
+        );
+        
+        $actual = $this->client->getResponse()->getContent();
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        
+        $service = $this->getService('ServiceA');
+        $this->assertNull($service);
+        $this->assertJsonContent(['msg'=>'Service Removed'], $actual);
+    }
+    
+    /**
+     * @test
+     */
+    public function deleteServiceReturnsNotFoundIfNoService() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com']]
+        ]);
+        $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
+        $this->client->request(
+                'DELETE', '/api/services/ServiceB', [], [], $requestHeaders
+        );
+        
+        $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+        
+    }
+    
     private function assertJsonContent($expected, $actual) {
         $this->assertJson($actual);
         $actualJson = json_decode($actual, true);
@@ -270,10 +306,10 @@ class ServiceControllerTest extends WebTestCase {
         $odm->getDocumentCollection('AppBundle\Document\Service')->drop();
     }
 
-    private function createServices($param0) {
+    private function createServices($services) {
         /* @var $odm DocumentManager */
         $odm = $this->client->getContainer()->get('doctrine_mongodb')->getManager();
-        foreach ($param0 as $serviceData) {
+        foreach ($services as $serviceData) {
             $service = $this->createService($serviceData);
             $odm->persist($service);
         }

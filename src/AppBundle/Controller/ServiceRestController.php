@@ -21,6 +21,17 @@ class ServiceRestController extends Controller {
         return $services;
     }
 
+    public function cdeleteAction($name) {
+        $dm = $this->get('doctrine_mongodb')->getManager();
+        $service = $this->findService($name);
+        if (!$service) {
+            throw $this->createNotFoundException("No known $name service");
+        }
+        $dm->remove($service);
+        $dm->flush();
+        return ['msg'=>'Service Removed'];
+    }
+
     public function getAction($name) {
         $service = $this->findService($name);
         if (!$service) {
@@ -86,7 +97,7 @@ class ServiceRestController extends Controller {
             $service->addProvider($provider);
         }
     }
-    
+
     private function unregisterService($name, $data) {
         /* @var $service Service */
         $service = $this->findService($name);
