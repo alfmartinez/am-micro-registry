@@ -10,3 +10,4 @@ services:
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]
     provider_selector:
         class: "%provider_selector_name%"
+        
