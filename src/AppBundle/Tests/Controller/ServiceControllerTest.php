@@ -51,7 +51,7 @@ class ServiceControllerTest extends WebTestCase {
         $actual = $this->client->getResponse()->getContent();
         $this->assertJsonContent([['name' => 'ServiceA'], ['name' => 'ServiceB']], $actual);
     }
-    
+
     /**
      * @test
      */
@@ -65,7 +65,7 @@ class ServiceControllerTest extends WebTestCase {
         $actual = $this->client->getResponse()->getContent();
         $this->assertJsonContent(['name' => 'ServiceA'], $actual);
     }
-    
+
     /**
      * @test
      */
@@ -77,37 +77,37 @@ class ServiceControllerTest extends WebTestCase {
         $this->client->request('GET', '/api/services/ServiceA/provider');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $actual = $this->client->getResponse()->getContent();
-        $this->assertJsonContent(['url'=>'http://test.example.com'], $actual);
+        $this->assertJsonContent(['url' => 'http://test.example.com'], $actual);
     }
-    
+
     /**
      * @test
      */
     public function getProviderReturnsFirstProviderForServiceIfServicesHasProvider() {
         $this->createServices([
-            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com', 'http://test2.example.com']],
             ['name' => 'ServiceB']
         ]);
         $this->client->request('GET', '/api/services/ServiceA/provider');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $actual = $this->client->getResponse()->getContent();
-        $this->assertJsonContent(['url'=>'http://test.example.com'], $actual);
+        $this->assertJsonContent(['url' => 'http://test.example.com'], $actual);
     }
-    
+
     /**
      * @test
      */
     public function getProvidersReturnsAllProviderForServiceIfServicesHasProvider() {
         $this->createServices([
-            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com', 'http://test2.example.com']],
             ['name' => 'ServiceB']
         ]);
         $this->client->request('GET', '/api/services/ServiceA/providers');
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $actual = $this->client->getResponse()->getContent();
-        $this->assertJsonContent([['url'=>'http://test.example.com'],['url'=>'http://test2.example.com']], $actual);
+        $this->assertJsonContent([['url' => 'http://test.example.com'], ['url' => 'http://test2.example.com']], $actual);
     }
-    
+
     /**
      * @test
      */
@@ -119,7 +119,7 @@ class ServiceControllerTest extends WebTestCase {
         $this->client->request('GET', '/api/services/ServiceB/provider');
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
-    
+
     /**
      * @test
      */
@@ -131,7 +131,7 @@ class ServiceControllerTest extends WebTestCase {
         $this->client->request('GET', '/api/services/ServiceC');
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
     }
-    
+
     /**
      * @test
      */
@@ -142,6 +142,23 @@ class ServiceControllerTest extends WebTestCase {
         ]);
         $this->client->request('GET', '/api/services/ServiceC/provider');
         $this->assertEquals(404, $this->client->getResponse()->getStatusCode());
+    }
+
+    /**
+     * @test
+     */
+    public function postRegisterCreatesServiceIfNoServiceExists() {
+        $requestBody = json_encode(['name'=>'ServiceA','host'=>'http://test.example.com']);
+        $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
+        $this->client->request(
+                'POST', '/api/services/registers', [], [], $requestHeaders, $requestBody
+        );
+        
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $actual = $this->client->getResponse()->getContent();
+        $this->assertServiceHasProvider('http://test.example.com','ServiceA');
+        $this->assertJsonContent(['msg'=>'Registration OK'], $actual);
+        
     }
 
     private function assertJsonContent($expected, $actual) {
@@ -175,6 +192,15 @@ class ServiceControllerTest extends WebTestCase {
             }
         }
         return $service;
+    }
+
+    public function assertServiceHasProvider($providerUrl, $service) {
+         /* @var $odm DocumentManager */
+        $odm = $this->client->getContainer()->get('doctrine_mongodb')->getManager();
+        $service = $odm->getRepository('AppBundle:Service')->findOneByName($service);
+        $this->assertInstanceOf('AppBundle\Document\Service', $service);
+        $urls = array_map(function($provider){return $provider->getUrl();}, $service->getProviders()->toArray());
+        $this->assertContains($providerUrl, $urls);
     }
 
 }

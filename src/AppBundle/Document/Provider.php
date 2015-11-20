@@ -11,21 +11,19 @@ use JMS\Serializer\Annotation\Expose;
  * @ExclusionPolicy("all")
  */
 class Provider {
+
     /**
      * @MongoDB\String
      * @Expose
      */
     protected $url;
+
     function __construct($url) {
         $this->url = $url;
     }
-    
+
     public function getUrl() {
         return $this->url;
-    }
-
-    public function setUrl($url) {
-        $this->url = $url;
     }
 
 }
