@@ -49,9 +49,16 @@ class ServiceRestController extends Controller {
         return $provider;
     }
 
-    public function postRegisterAction(Request $request) {
+    public function putProviderAction($name, Request $request) {
         $data = json_decode($request->getContent());
-        $this->registerService($data);
+        $this->registerService($name, $data);
+        $msg = 'Registration OK';
+        return ['msg' => $msg];
+    }
+
+    public function deleteProviderAction($name, Request $request) {
+        $data = json_decode($request->getContent());
+        $this->unregisterService($name, $data);
         $msg = 'Registration OK';
         return ['msg' => $msg];
     }
@@ -69,14 +76,25 @@ class ServiceRestController extends Controller {
         return $selector->select($service->getProviders());
     }
 
-    private function registerService($data) {
-        $service = $this->findService($data->name);
+    private function registerService($name, $data) {
+        $service = $this->findService($name);
         if (!$service) {
-            $service = $this->createService($data->name);
+            $service = $this->createService($name);
         }
         if ($data->host) {
             $provider = new Provider($data->host);
             $service->addProvider($provider);
+        }
+    }
+    
+    private function unregisterService($name, $data) {
+        /* @var $service Service */
+        $service = $this->findService($name);
+        if (!$service) {
+            throw $this->createNotFoundException("No known $name service");
+        }
+        if ($data->host) {
+            $service->removeProvider($data->host);
         }
     }
 

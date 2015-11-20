@@ -159,11 +159,11 @@ class ServiceControllerTest extends WebTestCase {
     /**
      * @test
      */
-    public function postRegisterCreatesServiceWithProviderIfServiceDoesNotExist() {
-        $requestBody = json_encode(['name'=>'ServiceA','host'=>'http://test.example.com']);
+    public function putProviderCreatesServiceWithProviderIfServiceDoesNotExist() {
+        $requestBody = json_encode(['host'=>'http://test.example.com']);
         $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
         $this->client->request(
-                'POST', '/api/services/registers', [], [], $requestHeaders, $requestBody
+                'PUT', '/api/services/ServiceA/provider', [], [], $requestHeaders, $requestBody
         );
         
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
@@ -175,21 +175,43 @@ class ServiceControllerTest extends WebTestCase {
     /**
      * @test
      */
-    public function postRegisterAddsProviderIfServiceExists() {
+    public function putProviderAddsProviderIfServiceExists() {
         $this->createServices([
             ['name' => 'ServiceA', 'providers' => ['http://test.example.com']],
             ['name' => 'ServiceB']
         ]);
-        $requestBody = json_encode(['name'=>'ServiceA','host'=>'http://test2.example.com']);
+        $requestBody = json_encode(['host'=>'http://test2.example.com']);
         $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
         $this->client->request(
-                'POST', '/api/services/registers', [], [], $requestHeaders, $requestBody
+                'PUT', '/api/services/ServiceA/provider', [], [], $requestHeaders, $requestBody
         );
         
         $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
         $actual = $this->client->getResponse()->getContent();
         $this->assertServiceHasProvider('http://test.example.com','ServiceA');
         $this->assertServiceHasProvider('http://test2.example.com','ServiceA');
+        $this->assertJsonContent(['msg'=>'Registration OK'], $actual);
+        
+    }
+    
+    /**
+     * @test
+     */
+    public function postUnregisterRemovesProviderIfServiceExists() {
+        $this->createServices([
+            ['name' => 'ServiceA', 'providers' => ['http://test.example.com','http://test2.example.com']],
+            ['name' => 'ServiceB']
+        ]);
+        $requestBody = json_encode(['host'=>'http://test2.example.com']);
+        $requestHeaders = ['CONTENT_TYPE' => 'application/json'];
+        $this->client->request(
+                'DELETE', '/api/services/ServiceA/provider', [], [], $requestHeaders, $requestBody
+        );
+        
+        $this->assertEquals(200, $this->client->getResponse()->getStatusCode());
+        $actual = $this->client->getResponse()->getContent();
+        $this->assertServiceHasProvider('http://test.example.com','ServiceA');
+        $this->assertServiceHasNotProvider('http://test2.example.com','ServiceA');
         $this->assertJsonContent(['msg'=>'Registration OK'], $actual);
         
     }
@@ -227,13 +249,25 @@ class ServiceControllerTest extends WebTestCase {
         return $service;
     }
 
-    public function assertServiceHasProvider($providerUrl, $service) {
-         /* @var $odm DocumentManager */
-        $odm = $this->client->getContainer()->get('doctrine_mongodb')->getManager();
-        $service = $odm->getRepository('AppBundle:Service')->findOneByName($service);
+    private function assertServiceHasProvider($providerUrl, $serviceName) {
+        $service = $this->getService($serviceName);
         $this->assertInstanceOf('AppBundle\Document\Service', $service);
         $urls = array_map(function($provider){return $provider->getUrl();}, $service->getProviders()->toArray());
         $this->assertContains($providerUrl, $urls);
+    }
+    
+    private function assertServiceHasNotProvider($providerUrl, $serviceName) {
+        $service = $this->getService($serviceName);
+        $this->assertInstanceOf('AppBundle\Document\Service', $service);
+        $urls = array_map(function($provider){return $provider->getUrl();}, $service->getProviders()->toArray());
+        $this->assertNotContains($providerUrl, $urls);
+    }
+    
+    private function getService($serviceName) {
+         /* @var $odm DocumentManager */
+        $odm = $this->client->getContainer()->get('doctrine_mongodb')->getManager();
+        $service = $odm->getRepository('AppBundle:Service')->findOneByName($serviceName);
+        return $service;
     }
 
 }

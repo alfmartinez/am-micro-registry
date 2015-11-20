@@ -40,4 +40,13 @@ class Service {
         $this->providers[] = $provider;
     }
 
+    public function removeProvider($url) {
+        /* @var $value Provider */
+        foreach ($this->providers as $key => $value) {
+            if ($value->getUrl() == $url) {
+                unset($this->providers[$key]);
+            }
+        }
+    }
+
 }
